@@ -1,6 +1,6 @@
-package mdoel;
+package model;
 
-public final class SavingsAccount extends Accout {
+public final class SavingsAccount extends Account {
     private double interestRate;
 
     public SavingsAccount(Long id, String number, double balance, Long clientId, double interestRate) {
