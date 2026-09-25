@@ -21,7 +21,7 @@ public class ClientDAO {
             Connection connection = DatabaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(
                 sql,
-                PreparedStatement.RETURN_GENERATED_KEYS
+                PreparedStatement.RETURN_GENERATED_KEYS 
             )
         ) {
 

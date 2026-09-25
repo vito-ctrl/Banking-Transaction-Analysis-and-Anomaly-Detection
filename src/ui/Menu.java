@@ -50,11 +50,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // CLIENT MENU
-    // ==========================================
-
     private void clientMenu() {
 
         while (true) {
@@ -100,11 +95,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // CREATE CLIENT
-    // ==========================================
-
     private void createClient() throws Exception {
 
         System.out.print("Name: ");
@@ -124,11 +114,6 @@ public class Menu {
         System.out.println("\nClient created!");
         System.out.println(created);
     }
-
-
-    // ==========================================
-    // FIND CLIENT
-    // ==========================================
 
     private void findClient() throws Exception {
 
@@ -150,11 +135,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // LIST CLIENTS
-    // ==========================================
-
     private void listClients() throws Exception {
 
         List<Client> clients =
@@ -172,11 +152,6 @@ public class Menu {
             System.out.println(client);
         }
     }
-
-
-    // ==========================================
-    // UPDATE CLIENT
-    // ==========================================
 
     private void updateClient() throws Exception {
 
@@ -206,11 +181,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // DELETE CLIENT
-    // ==========================================
-
     private void deleteClient() throws Exception {
 
         System.out.print("Client ID: ");
@@ -226,11 +196,6 @@ public class Menu {
             System.out.println("Client not found.");
         }
     }
-
-
-    // ==========================================
-    // ACCOUNT MENU
-    // ==========================================
 
     private void accountMenu() {
 
@@ -283,11 +248,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // CREATE CURRENT ACCOUNT
-    // ==========================================
-
     private void createCurrentAccount() throws Exception {
         try{
             System.out.print("Account number: ");
@@ -323,11 +283,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // CREATE SAVINGS ACCOUNT
-    // ==========================================
-
     private void createSavingsAccount() throws Exception {
 
         System.out.print("Account number: ");
@@ -360,11 +315,6 @@ public class Menu {
         printAccount(created);
     }
 
-
-    // ==========================================
-    // FIND ACCOUNT
-    // ==========================================
-
     private void findAccount() throws Exception {
 
         System.out.print("Account ID: ");
@@ -384,11 +334,6 @@ public class Menu {
         }
     }
 
-
-    // ==========================================
-    // LIST ACCOUNTS
-    // ==========================================
-
     private void listAccounts() throws Exception {
 
         List<Account> accounts =
@@ -404,11 +349,6 @@ public class Menu {
             printAccount(account);
         }
     }
-
-
-    // ==========================================
-    // LIST ACCOUNTS BY CLIENT
-    // ==========================================
 
     private void listAccountsByClient() throws Exception {
 
@@ -429,11 +369,6 @@ public class Menu {
             printAccount(account);
         }
     }
-
-
-    // ==========================================
-    // UPDATE ACCOUNT
-    // ==========================================
 
     private void updateAccount() throws Exception {
 
@@ -496,11 +431,6 @@ public class Menu {
             System.out.println("Account not found.");
         }
     }
-
-
-    // ==========================================
-    // DELETE ACCOUNT
-    // ==========================================
 
     private void deleteAccount() throws Exception {
 
