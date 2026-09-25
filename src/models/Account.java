@@ -1,14 +1,19 @@
 package model;
 
-public sealed abstract class Account 
+public sealed abstract class Account
         permits CurrentAccount, SavingsAccount {
-    
-    private long id;
+
+    private Long id;
     private String number;
     private double balance;
     private Long clientId;
 
-    public Account(Long id, String number, double balance, Long clientId) {
+    public Account(
+            Long id,
+            String number,
+            double balance,
+            Long clientId) {
+
         this.id = id;
         this.number = number;
         this.balance = balance;
