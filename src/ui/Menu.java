@@ -7,9 +7,14 @@ import model.Client;
 import model.CurrentAccount;
 import model.SavingsAccount;
 
+import model.Transaction;
+import model.TransactionType;
+import service.TransactionService;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.time.LocalDateTime;
 
 public class Menu {
 
@@ -18,6 +23,13 @@ public class Menu {
     private final ClientDAO clientDAO = new ClientDAO();
     private final AccountDAO accountDAO = new AccountDAO();
 
+    private final TransactionService transactionService;
+
+    public Menu() {
+        // this.clientService = new ClientService();
+        // this.accountService = new AccountService();
+        this.transactionService = new TransactionService();
+    }
 
     public void start() {
 
@@ -28,6 +40,7 @@ public class Menu {
             System.out.println("==============================");
             System.out.println("1. Client management");
             System.out.println("2. Account management");
+            System.out.println("3. Transaction management");
             System.out.println("0. Exit");
             System.out.print("Choose: ");
 
@@ -40,6 +53,8 @@ public class Menu {
 
                 case 2 -> accountMenu();
 
+                case 3 -> transactionMenu();
+                
                 case 0 -> {
                     System.out.println("Goodbye!");
                     return;
@@ -93,6 +108,284 @@ public class Menu {
                 System.out.println("Error: " + e.getMessage());
             }
         }
+    }
+
+    private void transactionMenu() {
+        while (true) {
+
+            System.out.println();
+            System.out.println("---------- TRANSACTIONS ----------");
+            System.out.println("1. Create transaction");
+            System.out.println("2. Find transaction by ID");
+            System.out.println("3. List all transactions");
+            System.out.println("4. List transactions by account");
+            System.out.println("5. Filter transactions by type");
+            System.out.println("6. Calculate total amount");
+            System.out.println("7. Calculate total by type");
+            System.out.println("8. Show suspicious transactions");
+            System.out.println("9. Update transaction");
+            System.out.println("10. Delete transaction");
+            System.out.println("0. Back");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            try {
+
+                switch (choice) {
+
+                    case 1 -> createTransaction();
+
+                    case 2 -> findTransaction();
+
+                    case 3 -> listTransactions();
+
+                    case 4 -> listTransactionsByAccount();
+
+                    case 5 -> filterTransactionsByType();
+
+                    case 6 -> calculateTotal();
+
+                    case 7 -> calculateTotalByType();
+
+                    case 8 -> showSuspiciousTransactions();
+
+                    case 9 -> updateTransaction();
+
+                    case 10 -> deleteTransaction();
+
+                    case 0 -> {
+                        return;
+                    }
+
+                    default ->
+                            System.out.println("Invalid choice.");
+
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+    private void createTransaction() throws Exception {
+
+        System.out.print("Amount: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.println("Transaction type:");
+        System.out.println("1. DEPOSIT");
+        System.out.println("2. WITHDRAWAL");
+        System.out.println("3. TRANSFER");
+
+        int typeChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        TransactionType type = switch (typeChoice) {
+            case 1 -> TransactionType.DEPOSIT;
+            case 2 -> TransactionType.WITHDRAWAL;
+            case 3 -> TransactionType.TRANSFER;
+            default -> throw new IllegalArgumentException("Invalid type.");
+        };
+
+        System.out.print("Location: ");
+        String location = scanner.nextLine();
+
+        System.out.print("Account ID: ");
+        Long accountId = scanner.nextLong();
+        scanner.nextLine();
+
+        Transaction transaction = new Transaction(
+                null,
+                LocalDateTime.now(),
+                amount,
+                type,
+                location,
+                accountId
+        );
+
+        Transaction created =
+                transactionService.create(transaction);
+
+        System.out.println("Transaction created:");
+        System.out.println(created);
+    }
+
+    private void findTransaction() throws Exception {
+
+        System.out.print("Transaction ID: ");
+        Long id = scanner.nextLong();
+        scanner.nextLine();
+
+        transactionService.findById(id)
+                .ifPresentOrElse(
+                        System.out::println,
+                        () -> System.out.println("Transaction not found.")
+                );
+    }
+
+    private void listTransactions() throws Exception {
+
+        List<Transaction> transactions =
+                transactionService.findAll();
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        transactions.forEach(System.out::println);
+    }
+
+    private void listTransactionsByAccount() throws Exception {
+
+        System.out.print("Account ID: ");
+        Long accountId = scanner.nextLong();
+        scanner.nextLine();
+
+        List<Transaction> transactions =
+                transactionService.findByAccountId(accountId);
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        transactions.forEach(System.out::println);
+    }
+
+    private void filterTransactionsByType() throws Exception {
+
+        System.out.println("1. DEPOSIT");
+        System.out.println("2. WITHDRAWAL");
+        System.out.println("3. TRANSFER");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        TransactionType type = switch (choice) {
+            case 1 -> TransactionType.DEPOSIT;
+            case 2 -> TransactionType.WITHDRAWAL;
+            case 3 -> TransactionType.TRANSFER;
+            default -> throw new IllegalArgumentException("Invalid type.");
+        };
+
+        transactionService.findByType(type)
+                .forEach(System.out::println);
+    }
+
+    private void calculateTotal() throws Exception {
+
+        double total =
+                transactionService.calculateTotalAmount();
+
+        System.out.println("Total transaction amount: " + total);
+    }
+
+    private void calculateTotalByType() throws Exception {
+
+        System.out.println("1. DEPOSIT");
+        System.out.println("2. WITHDRAWAL");
+        System.out.println("3. TRANSFER");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        TransactionType type = switch (choice) {
+            case 1 -> TransactionType.DEPOSIT;
+            case 2 -> TransactionType.WITHDRAWAL;
+            case 3 -> TransactionType.TRANSFER;
+            default -> throw new IllegalArgumentException("Invalid type.");
+        };
+
+        double total =
+                transactionService.calculateTotalByType(type);
+
+        System.out.println(
+                "Total " + type + ": " + total
+        );
+    }
+
+    private void showSuspiciousTransactions() throws Exception {
+
+        List<Transaction> suspicious =
+                transactionService.detectSuspiciousTransactions();
+
+        if (suspicious.isEmpty()) {
+            System.out.println("No suspicious transactions found.");
+            return;
+        }
+
+        System.out.println("Suspicious transactions:");
+
+        suspicious.forEach(System.out::println);
+    }
+
+    private void updateTransaction() throws Exception {
+
+        System.out.print("Transaction ID: ");
+        Long id = scanner.nextLong();
+
+        System.out.print("Amount: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.println("1. DEPOSIT");
+        System.out.println("2. WITHDRAWAL");
+        System.out.println("3. TRANSFER");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        TransactionType type = switch (choice) {
+            case 1 -> TransactionType.DEPOSIT;
+            case 2 -> TransactionType.WITHDRAWAL;
+            case 3 -> TransactionType.TRANSFER;
+            default -> throw new IllegalArgumentException("Invalid type.");
+        };
+
+        System.out.print("Location: ");
+        String location = scanner.nextLine();
+
+        System.out.print("Account ID: ");
+        Long accountId = scanner.nextLong();
+        scanner.nextLine();
+
+        Transaction transaction = new Transaction(
+                id,
+                LocalDateTime.now(),
+                amount,
+                type,
+                location,
+                accountId
+        );
+
+        boolean updated =
+                transactionService.update(transaction);
+
+        System.out.println(
+                updated
+                        ? "Transaction updated."
+                        : "Transaction not found."
+        );
+    }
+
+    private void deleteTransaction() throws Exception {
+
+        System.out.print("Transaction ID: ");
+        Long id = scanner.nextLong();
+        scanner.nextLine();
+
+        boolean deleted =
+                transactionService.deleteById(id);
+
+        System.out.println(
+                deleted
+                        ? "Transaction deleted."
+                        : "Transaction not found."
+        );
     }
 
     private void createClient() throws Exception {
